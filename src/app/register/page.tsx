@@ -48,6 +48,12 @@ export default function LoginForm() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    console.log("Datos del formulario: ", formData);
+    // Aquí puedes enviar los datos a tu backend o hacer alguna otra acción
+  }
+  const handleButton = (e) =>{
+    console.log(formData);
     if(formData.password == formData.passwordC){
       if(formData != null &&   formData.nombre !=""&& formData.apellidos !=""&& formData.dateNacimiento !=""&& formData.email !="" ){
 
@@ -62,11 +68,6 @@ export default function LoginForm() {
 
       alert('claves no coiciden');
     } 
-    console.log("Datos del formulario: ", formData);
-    // Aquí puedes enviar los datos a tu backend o hacer alguna otra acción
-  }
-  const handleButton = (e) =>{
-    console.log(formData);
 
   }
 

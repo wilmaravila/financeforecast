@@ -38,7 +38,7 @@ function useAuth() {
     const user = { nombres,apellidos,fechaNacimiento, email, password };  // Crea el objeto con los datos del usuario
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      const response = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,6 +47,7 @@ function useAuth() {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (response.ok) {
         setMessage(data.message);  // Establece el mensaje de éxito

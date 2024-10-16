@@ -46,22 +46,21 @@ app.get('/api/login', (req, res) => {
     });
   });
 
-  app.post('/api/register', (req, res) => {
+app.post('/api/register', (req, res) => {
     const { nombres, apellidos, fechaNacimiento, email, password } = req.body;
 
     if (!nombres || !apellidos || !fechaNacimiento || !email || !password) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
+
     // Iniciar transacción
-    connection.beginTransaction((err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error al iniciar la transacción' });
-        }
+   
 
         // Paso 1: Insertar el nuevo usuario
-        const queryUsuario = 'INSERT INTO usuarios (nombre, apellido, fecha_nacimiento) VALUES (?, ?, ?)';
-        connection.query(queryUsuario, [nombres, apellidos, fechaNacimiento], (err, result) => {
+    const queryUsuario = 'INSERT INTO usuarios (nombre, apellido, fecha_nacimiento) VALUES (?, ?, ?)';
+    console.log(queryUsuario);
+    connection.query(queryUsuario, [nombres, apellidos, fechaNacimiento], (err, result) => {
             if (err) {
                 return connection.rollback(() => {
                     res.status(500).json({ error: 'Error al insertar el usuario' });
@@ -92,7 +91,7 @@ app.get('/api/login', (req, res) => {
             });
         });
     });
-});
+;
  
  
 app.listen(port, () => {

@@ -154,7 +154,7 @@ export default function LoginForm() {
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                <a href="./olvide_clave" className="font-medium text-blue-600 hover:text-blue-500">
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
