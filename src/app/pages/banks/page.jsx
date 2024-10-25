@@ -2,12 +2,14 @@ import React from 'react';
 import Image from 'next/image'; // Si usas Next.js
 
 // Imagenes locales o desde public
-import Navegar from '../LayoutB'
-import business from '../assets/images/business.jpg'
-import bankingImage from '../assets/images/Logo.png'; // Coloca tu imagen aquí
-import cdtIcon from '../assets/images/imagenPrueba.jpg';
-import interestIcon from '../assets/images/istockphoto-1317323736-612x612.jpg';
-import feeIcon from '../assets/images/gratisography-cyber-kitty-800x525.jpg';
+import Navegar from './LayoutB'
+import business from '../../assets/images/business.jpg'
+import bankingImage from '../../assets/images/Logo.png'; // Coloca tu imagen aquí
+import cdtIcon from '../../assets/images/cdt.png';
+import Colombia from '../../assets/images/bColombia.png'
+import Agrario from '../../assets/images/bAgrario.png'
+import Colpatria from '../../assets/images/bColpatria.png'
+
 
 
 
@@ -42,17 +44,22 @@ export default function HomePage() {
             <p className="text-gray-600 mb-4">Consulta los CDTs más rentables y asegúrate de obtener el mayor beneficio para tu inversión.</p>
           
             <a href="/"> <button className="bg-blue-500 text-white px-0 py-2  w-36 rounded-2xl	 ">Ver más</button></a>
+            <div className='flex justify-center'>
+              <Image src={Colombia} alt="CDT Icon" width={60} height={60}/>
+              <Image src={Agrario} alt="CDT Icon" width={60} height={60}/>
+              <Image src={Colpatria} alt="CDT Icon" width={60} height={60}/>
+            </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <Image src={interestIcon} alt="Interest Icon" width={60} height={60} className="mx-auto mb-4" />
+          <div className="bg-white rounded-lg shadow-md p-6 text-center flex flex-col justify-center ">
+            
             <h3 className="text-xl font-bold mb-2">Las Tasas de Interés Más Bajas</h3>
             <p className="text-gray-600 mb-4">Compara las tasas de interés de los diferentes bancos y selecciona la mejor opción para tus préstamos.</p>
             <a href="/"> <button className="bg-blue-500 text-white px-0 py-2  w-36 rounded-2xl	 ">Ver más</button></a>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <Image src={feeIcon} alt="Fee Icon" width={60} height={60} className="mx-auto mb-4" />
+          <div className="bg-white rounded-lg shadow-md p-6 text-center flex flex-col justify-center ">
+            
             <h3 className="text-xl font-bold mb-2">Cuotas de Manejo</h3>
             <p className="text-gray-600 mb-4">Descubre las entidades bancarias con las cuotas de manejo más bajas para cuentas de ahorro y tarjetas.</p>
             <a href="/"> <button className="bg-blue-500 text-white px-0 py-2  w-36 rounded-2xl	 ">Ver más</button></a>

@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/**/*"
-  ],
+, "backend/utils/sendEmail.js"  ],
   "exclude": [
     "node_modules"
   ]

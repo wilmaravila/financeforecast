@@ -2,13 +2,15 @@
 import { ChangeEvent,useState } from "react"
 
 import Image from "next/image"
-import bankingImage from '../assets/images/Logo.png' 
-import InputC from "../utils/InputC"
-import useAuth from '../api/controller';
+import bankingImage from '../../../assets/images/Logo.png' 
+import InputC from "../../../utils/InputC"
+import useAuth from '../../../api/controller';
 import { useRouter } from 'next/navigation';
-import Input from "../utils/Input"
+import Input from "../../../utils/Input"
 import Button from "./Button"
-import LoginComponent from "../api/controller"
+import { promises } from "dns"
+
+
 
 
 
@@ -46,14 +48,19 @@ export default function LoginForm() {
 
   const handleButton = () => {
     
-    let esta = login(userCorreo,pass);
+    const esta = login(userCorreo,pass);
      console.log(esta);
-    if(esta){
-      router.push('/finanzas_personales');
+     esta.then((value) => {
+      if(value){
+        router.push('../finanzasPersonales');
+  
+      }else{
+        alert('El usuario o la contraseña son incorrectos')
+      }
 
-    }else{
-      alert('El usuario o la contraseña son incorrectos')
-    }
+     });
+     
+   
     
     // Aquí puedes añadir la lógica de inicio de sesión
   };
@@ -154,7 +161,7 @@ export default function LoginForm() {
                 </label>
               </div>
               <div className="text-sm">
-                <a href="./olvide_clave" className="font-medium text-blue-600 hover:text-blue-500">
+                <a href="./recoverPassword" className="font-medium text-blue-600 hover:text-blue-500">
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
@@ -183,7 +190,7 @@ export default function LoginForm() {
             <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center">
               <p className="text-sm text-gray-600">
                 ¿No tienes una cuenta?{' '}
-                <a href="../register" className="font-medium text-blue-600 hover:text-blue-500">
+                <a href="./register" className="font-medium text-blue-600 hover:text-blue-500">
                   Regístrate ahora
                 </a>
               </p>

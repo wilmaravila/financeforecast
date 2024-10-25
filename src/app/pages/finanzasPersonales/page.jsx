@@ -2,7 +2,7 @@
 import Navegar from './LayoutF'
 
 import React from 'react';
-import { Button } from '../Button';
+import { Button } from '../../Button';
 
 export default  function finanzasPersonales() {
   return (

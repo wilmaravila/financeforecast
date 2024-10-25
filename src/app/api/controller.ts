@@ -1,3 +1,4 @@
+import { json } from 'node:stream/consumers';
 import { useState, useEffect } from 'react';
 
 function useAuth() {
@@ -6,32 +7,47 @@ function useAuth() {
   const [message, setMessage] = useState('');  // Estado para mensajes de registro
 
   // useEffect para obtener usuarios al cargar el componente
-  useEffect(() => {
-    const fetchUsuarios = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/login');  // Asegúrate de que la URL sea correcta
-        if (!response.ok) {
-          throw new Error('Error al obtener los datos');
-        }
-        const data = await response.json();
-        setUsuarios(data);  // Establece los usuarios en el estado
-      } catch (error) {
-        setError(error.message);  // Establece el error en el estado
-      }
-    };
-
-    fetchUsuarios();
-  }, []);  // Asegúrate de pasar un array vacío para que solo se ejecute una vez
+  // Asegúrate de pasar un array vacío para que solo se ejecute una vez
 
   // Función para login
-  const login = (userCorreo, password) => {
-    for (let user of usuarios) {
-      if (user.correo === userCorreo && user.password === password) {
-        return true;  // Si el usuario y contraseña coinciden, retorna verdadero
-      }
+ 
+  const login = async (email, password) => {
+    const user = { email, password };
+    try {
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST', // Cambiar a POST
+            headers: {
+                'Content-Type': 'application/json', // Establecer el tipo de contenido
+            },
+            body: JSON.stringify(user),
+        });
+        console.log(response);
+        // Verificar si la respuesta fue exitosa
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error en la autenticación');
+        }
+
+        const data = await response.ok;
+        if(data == true){
+          return true;
+        }else{
+          return false;
+        }
+        
+         // Retornar los datos de la respuesta
+    } catch (error) {
+        setError(error.message);  // Establecer el error en el estado
     }
-    return false;  // Si no coincide, retorna falso
-  };
+};
+
+ // Asegúrate de pasar un array vacío para que solo se ejecute una vez
+
+  // Función para login
+
+
+ 
+    
 
   // Función para registrar un nuevo usuario
   const register = async (nombres,apellidos,fechaNacimiento, email, password) => {
@@ -46,20 +62,53 @@ function useAuth() {
         body: JSON.stringify(user),
       });
 
-      const data = await response.json();
+      const data = await response;
       console.log(data);
 
-      if (response.ok) {
-        setMessage(data.message);  // Establece el mensaje de éxito
-      } else {
-        setMessage(data.error);  // Establece el mensaje de error
-      }
+      
     } catch (error) {
       setMessage('Error al registrar usuario');
     }
   };
 
-  return { login, error, register, message };  // Devuelve las funciones y los estados necesarios
+  // obtiene datos proporcionados por el usuario para enviar una validacion
+  const recoverPassword = async(email)=>{
+
+    
+    try{
+      const response = await fetch('http://localhost:5000/api/recoverPassword',{
+
+        method: 'POST',
+        headers:{ 'Content-Type': 'application/json'},
+        body: JSON.stringify({email})
+      })
+      return response.json();
+
+    }catch(error){
+
+    }
+
+
+  }
+  const resetPassword = async(email)=>{
+
+    try{
+      const response = await fetch('http://localhost:5000/api/resetPassword',{
+
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+
+      });
+      return response.json();
+   
+
+    }catch(error){
+      setMessage('Error al recuperar password')
+    }
+  }
+
+  return { login, error, register, message,recoverPassword };  // Devuelve las funciones y los estados necesarios
 }
 
 export default useAuth;

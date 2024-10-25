@@ -1,13 +1,13 @@
 
 'use client'
 import { useState,FormEvent } from "react"
-import useAuth from '../api/controller';
+import useAuth from '../../../api/controller';
 
 import Image from "next/image"
-import bankingImage from '../assets/images/Logo.png' 
-import Input from "../utils/Input"
+import bankingImage from '../../../assets/images/Logo.png' 
+import Input from "../../../utils/Input"
 import Button from "../login/Button"
-import InputC from "../utils/InputCR"
+import InputC from "../../../utils/InputCR"
 
 
 
@@ -244,7 +244,7 @@ export default function LoginForm() {
             <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center">
               <p className="text-sm text-gray-600">
                 ¿Si ya tienes cuenta?{' '}
-                <a href="../login" className="font-medium text-blue-600 hover:text-blue-500">
+                <a href="./login" className="font-medium text-blue-600 hover:text-blue-500">
                   Inicia Sesión
                 </a>
               </p>
