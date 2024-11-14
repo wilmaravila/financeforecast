@@ -31,7 +31,7 @@ export default function HomePage() {
              <a> <button className="bg-blue-500 text-white px-0 py-2  w-36 rounded-2xl	 ">Empezar Aquí</button></a>
             </div>
             <div className="p-4">
-              <Image src={business} alt="Banking APIs" width={400} height={250} className="rounded-lg" />
+              <Image src={business}  alt="Banking APIs"  className="rounded-lg w-96 h-52" />
             </div>
           </div>
         </section>
@@ -39,15 +39,15 @@ export default function HomePage() {
         {/* Tarjetas de Información */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <Image src={cdtIcon} alt="CDT Icon" width={60} height={60} className="mx-auto mb-4" />
+            <Image src={cdtIcon} alt="CDT Icon"   className="mx-auto mb-4 w-16 h-16" />
             <h3 className="text-xl font-bold mb-2">Los Mejores CDTs</h3>
             <p className="text-gray-600 mb-4">Consulta los CDTs más rentables y asegúrate de obtener el mayor beneficio para tu inversión.</p>
           
             <a href="/"> <button className="bg-blue-500 text-white px-0 py-2  w-36 rounded-2xl	 ">Ver más</button></a>
             <div className='flex justify-center'>
-              <Image src={Colombia} alt="CDT Icon" width={60} height={60}/>
-              <Image src={Agrario} alt="CDT Icon" width={60} height={60}/>
-              <Image src={Colpatria} alt="CDT Icon" width={60} height={60}/>
+              <Image src={Colombia} alt="CDT Icon" className='w-16 h-16' />
+              <Image src={Agrario} alt="CDT Icon" className='w-16 h-16'/>
+              <Image src={Colpatria} alt="CDT Icon" className='w-16 h-16' />
             </div>
           </div>
 

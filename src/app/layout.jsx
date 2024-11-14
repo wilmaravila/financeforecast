@@ -1,5 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import { parseCookies } from 'nookies';
 
 
 const geistSans = localFont({
@@ -19,6 +20,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const { nonce } = parseCookies();
   return (
     <html lang="en">
       
@@ -28,6 +30,12 @@ export default function RootLayout({ children }) {
         
 
         {children}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `console.log("Script ejecutado en el layout");`,
+          }}
+        />
       </body>
     </html>
   );

@@ -64,7 +64,7 @@ export default function HomePage() {
             </div>
             <div className='pl-14 '>
              <div className='flex items-center justify-center'>
-                <Image src={ahorro} alt="" className='w-12   ' />
+                <Image src={ahorro} alt="Una alcancia" className='w-12   ' />
               </div>
               <div className='pt-8'>
                   <h3 className='font-bold'>Ahorros</h3>
@@ -75,7 +75,7 @@ export default function HomePage() {
             <div >
               <div className='flex items-center justify-center'>
                 
-                  <Image src={deuda}  className='w-12 '/>
+                  <Image src={deuda} alt='Imagen de desincremento de dinero'  className='w-12 h-auto '/>
               </div>
               <div className='pl-14 pt-8'>
                   <h3 className='font-bold'>Deudas</h3>
@@ -108,7 +108,7 @@ export default function HomePage() {
             </div>
             <div className='pl-14 '>
             <div className='flex items-center justify-center'>
-                <Image src={edufinanciera} alt="" className='w-12   ' />
+                <Image src={edufinanciera} alt="Tabla dinero" className='w-12   ' />
               </div>
               <div className='pt-8'>
                   <h3 className='font-bold'>Educación financiera</h3>
@@ -119,7 +119,7 @@ export default function HomePage() {
             <div >
               <div className='flex items-center justify-center'>
                 
-                  <Image src={inversiones}  className='w-12 '/>
+                  <Image src={inversiones} alt='Grafica de aumento dinero' className='w-12 '/>
               </div>
               <div className='pl-14 pt-8'>
                   <h3 className='font-bold'>Inversiones</h3>

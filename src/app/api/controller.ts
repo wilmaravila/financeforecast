@@ -21,7 +21,7 @@ function useAuth() {
             },
             body: JSON.stringify(user),
         });
-        console.log(response);
+       
         // Verificar si la respuesta fue exitosa
         if (!response.ok) {
             const errorData = await response.json();
