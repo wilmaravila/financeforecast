@@ -30,7 +30,7 @@ export default function HomePage() {
           <p className='pt-10 text-36 '>Gestiona tus cuentas, optimiza tus ahorros y toma decisiones informadas, todo desde una plataforma que reúne la mejor información bancaria en un solo lugar.</p>
           <div className='flex justify-center flex-col items-center'> 
               <a href="./pages/auth/register"><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-tahiti bg-indigo-400	'>Regístrate de forma gratuita</button></a>
-              <p className='text-bold'>¿Ya tienes una cuenta? <a href="./pages/aunt/login">Inicia sesión</a></p>
+              <p className='text-bold'>¿Ya tienes una cuenta? <a href="./pages/auth/login">Inicia sesión</a></p>
             </div> 
         </section>
 
@@ -40,7 +40,7 @@ export default function HomePage() {
               <Image src={bienestar} alt="" className='w-full h-full pl-8'/>
             </div>
             <div className='flex flex-col justify-center  pr-8 pl-44  text-wrap w-3/5 h-30 '>
-              <h2 className='fond-bold '>TU BIENESTAR DINANCIERO EMPiEZA AQUÍ</h2>
+              <h2 className='fond-bold '>TU BIENESTAR FINANCIERO EMPiEZA AQUÍ</h2>
               <p className='pt-2 text-lg font-medium'>Descubre cómo tomar mejores decisiones financieras con las mejores herramientas e información bancaria en un solo lugar. Optimiza tu dinero, ahorra más y alcanza tus metas con confianza. ¡Empieza hoy y transforma tu futuro financiero!</p>
             </div>
           

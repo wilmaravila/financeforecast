@@ -1,40 +1,72 @@
-
-import Navegar from './LayoutF'
-
+import Navegar from './LayoutF';
 import React from 'react';
+import Image from 'next/image';
+import jubilacion from '../../assets/images/jubilacion.jpg';
+import regla from '../../assets/images/regla72.jpeg';
+import inv from '../../assets/images/inversion2.png';
 import { Button } from '../../Button';
+
 
 export default  function finanzasPersonales() {
   return (
     <>
     <Navegar></Navegar>
-    <main className="mt-8 m-16">
+    <main className="container mx-auto py-8">
     <section className="mb-12">
-    <h1 className="text-3xl font-bold mb-4">En tus finanzas</h1>
-    <p className="text-xl mb-8">Para que gestionar y organizar los recursos de tu da a dia deje de ser un reto</p>
-
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {['IMAGEN', 'IMAGEN', 'IMAGEN'].map((img, index) => (
-        <div key={index} className="bg-gray-200 p-4 rounded">
-            <div className="bg-gray-300 h-40 mb-4"></div>
-            <h3 className="font-semibold mb-2">
-            {index === 0 && 'La Jubilación Activa, en detalle: qué es, cómo funciona…'}
-            {index === 1 && 'La Regla del 72: una forma fácil de controlar inversiones Regla del 55: una forma fácil de controlar Inversiones'}
-            {index === 2 && 'Inversiones Éticas: cómo hacer que tu dinero trabaje para el bien'}
-            </h3>
-            <p className="text-sm mb-4">
-            {index === 0 && 'Afrontar la jubilación puede convertirse en todo un reto, especialmente en el ámbito financiero. Dejar de trabajar para…'}
-            {index === 1 && 'Ahorrar es clave para la vida. Pero no importa que nuestra hucha sea grande o pequeña, el dinero poco a poco va perdiendo su valor...'}
-            {index === 2 && 'En un mundo cada vez más consciente de los desafíos sociales y ambientales, las inversiones éticas han emergido como una poderosa herramienta...'}
-            </p>
-            <button variant="outline">Ver Más</button>
-        </div>
-        ))}
+    <h1 className="text-4xl font-bold font-mono mb-10 mt-10 text-center pl-40 pr-40">Gestiona y organiza tus recursos diarios sin complicaciones mejora tus finanzas con facilidad</h1>
+    <p className="text-xl mb-6"></p>
+    <div className='flex justify-center flex-col items-center'>
+        <p className="text-2xl font-semibold mb-10 ">Conoce a Nuestro Asistente Virtual Finance AI</p>
+        <a href="./financeAi"><button className='mb-5 px-10 py-3 text-white bg-cyan-600 hover:bg-cyan-700 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Finance AI</button></a>
     </div>
+    
+    <hr className=' w-full size-1.5 mt-8 pr-44 bg-tahiti' />
+    <section className='pt-10  '></section>
+    <h2 className='text-center pb-10 text-2xl font-semibold'>Tips Para Mejorar tus Finanzas Personales</h2>
+      <div className="flex gap-8 overflow-x-auto">
+        <div className="bg-gray-200 p-5 rounded-[20px] min-h-[400px] w-[780px] flex flex-col">
+          <div className="bg-gray-300 rounded-[10px] h-80">
+            <Image 
+              src={inv}
+              alt="Imagen 1"
+              className="w-[600px] h-[340px] object-cover rounded-[10px]" 
+            />
+          </div>
+          <h3 className="font-semibold mb-2 mt-10">Inversiones Éticas: Cómo Hacer Que tu Dinero Trabaje...</h3>
+          <p className="text-sm mb-4">En un mundo cada vez más consciente de los desafíos sociales y ambientales, las inversiones éticas han emergido como una poderosa herramienta para generar un impacto positivo, permitiendo que el capital no solo genere rendimientos financieros...</p>
+          <a href="../" className="text-x1 font-semibold text-gray-600 hover:text-cyan-600">Ver Más -</a>
+        </div>
+        <div className="bg-gray-200 p-5 rounded-[20px] min-h-[400px] w-[780px] flex flex-col">
+          <div className="bg-gray-300 rounded-[10px] h-80">
+            <Image 
+              src={jubilacion}
+              alt="Imagen 1"
+              className="w-[600px] h-[340px] object-cover rounded-[10px]" 
+            />
+          </div>
+          <h3 className="font-semibold mb-2 mt-10">La Jubilación Activa, en Detalle: Qué es, Cómo Funciona…</h3>
+          <p className="text-sm mb-4">Afrontar la jubilación puede convertirse en todo un reto, especialmente en el ámbito financiero. Dejar de trabajar para disfrutar de una nueva etapa de vida con tranquilidad requiere una planificación adecuada y estratégica...</p>
+          <a href="../" className="text-x1 font-semibold text-gray-600 hover:text-cyan-600">Ver Más -</a>
+        </div>
+        <div className="bg-gray-200 p-5 rounded-[20px] min-h-[400px] w-[780px] flex flex-col">
+          <div className="bg-gray-300 rounded-[10px] h-80">
+            <Image 
+              src={regla}
+              alt="Imagen 1"
+              className="w-[600px] h-[340px] object-cover rounded-[10px]" 
+            />
+          </div>
+          <h3 className="font-semibold mb-2 mt-10">La Regla del 72: Una Forma Fácil de Controlar Inversiones</h3>
+          <p className="text-sm mb-4">Ahorrar es clave para la vida y la estabilidad financiera. Pero no importa que nuestra hucha sea grande o pequeña, el dinero, con el tiempo, poco a poco va perdiendo su valor debido a factores como la inflación y los cambios en la economía...</p>
+          <a href="../" className="text-x1 font-semibold text-gray-600 hover:text-cyan-600">Ver Más -</a>
+          </div>
+
+    </div>
+
     </section>
 
     <section className="mb-12">
-    <h2 className="text-2xl font-bold mb-4">Manejo tus Finanzas</h2>
+    <h2 className="text-2xl font-bold mb-4">Maneja tus Finanzas</h2>
     <p className="mb-4">
     Si necesitas ese último empujón para empezar a
     ahorrar dinero, aquí tienes recomendaciones y trucos que te ayudarán a mejorar tus finanzas personales. En esta sección podrás aprender a ahorrar dinero

@@ -1,0 +1,496 @@
+<html><head><base href="https://websim.creationengine.ai/financeai/">
+    <meta charset="UTF-8">
+    <title>Finance AI - Asistente Virtual con Reconocimiento de Voz</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #040543;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        overflow: hidden;
+      }
+      
+      #hologram {
+        width: 80vmin;
+        height: 80vmin;
+        position: relative;
+        z-index: 10;
+      }
+    
+      #center-circle {
+        position: absolute;
+        width: 20%;
+        height: 20%;
+        background-color: #11cbdc9e;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 15;
+        animation: circle-glow 2s infinite ease-in-out;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+    
+      #center-circle:hover {
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+    
+      #center-circle.listening {
+        animation: circle-pulse 1.5s infinite;
+      }
+    
+      @keyframes circle-pulse {
+        0% {
+          box-shadow: 0 0 0 0 #11cbdc9e;
+        }
+        70% {
+          box-shadow: 0 0 0 20px rgba(0, 255, 255, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 255, 255, 0);
+        }
+      }
+    
+      @keyframes circle-glow {
+        0%, 100% {
+          box-shadow: 0 0 5px #11cbdc9e, 0 0 10px #11cbdc9e, 0 0 15px #11cbdc9e;
+        }
+        50% {
+          box-shadow: 0 0 10px #11cbdc9e, 0 0 20px #11cbdc9e, 0 0 30px #11cbdc9e, 0 0 40px #11cbdc9e;
+        }
+      }
+      
+      .oval {
+        position: absolute;
+        border: 2px solid #11cbdc9e;
+        border-radius: 50%;
+        animation: rotate 10s infinite linear, deform 5s infinite ease-in-out;
+        transition: box-shadow 0.3s ease;
+      }
+      
+      @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes deform {
+        0%, 100% { border-radius: 50%; }
+        50% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      }
+      
+      @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px #00eeff, 0 0 10px #00eeff, 0 0 15px #00eeff, 0 0 20px #00eeff; }
+        50% { box-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff, 0 0 30px #00eeff, 0 0 40px #00eeff; }
+      }
+      
+      .oval.glowing {
+        animation: rotate 10s infinite linear, deform 5s infinite ease-in-out, glow 2s infinite ease-in-out;
+      }
+      
+      #status {
+        position: absolute;
+        bottom: 20px;
+        text-align: center;
+        width: 100%;
+        font-size: 1.2em;
+        z-index: 20;
+      }
+    
+      #binary-matrix {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 1;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        color: #ffffff58;
+      }
+    
+      .binary-column {
+        position: absolute;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        animation: fall 20s linear infinite;
+      }
+    
+      .binary-digit {
+        opacity: 0;
+        animation: fade-in-out 2s ease-in-out infinite;
+      }
+    
+      @keyframes fall {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(100%);
+        }
+      }
+    
+      @keyframes fade-in-out {
+        0%, 100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+    
+      #browser-frame {
+        position: fixed;
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
+        border: none;
+        z-index: 100;
+        display: none;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      }
+    
+      #close-browser {
+        position: fixed;
+        top: 5%;
+        right: 5%;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: rgba(255, 0, 0, 0.7);
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        z-index: 101;
+        display: none;
+      }
+    
+      #sparks-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+    
+      .spark {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background-color: rgba(0, 255, 255, 0.8);
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: spark-animation 0.5s ease-out;
+      }
+    
+      @keyframes spark-animation {
+        0% {
+          transform: scale(1) translate(0, 0);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(2) translate(var(--tx), var(--ty));
+          opacity: 0;
+        }
+      }
+    
+      .solar-flare {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.8) 0%, rgba(0, 255, 255, 0) 70%);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 12;
+      }
+    
+      @keyframes solar-flare-animation {
+        0% {
+          width: 0;
+          height: 0;
+          opacity: 0.8;
+        }
+        100% {
+          width: 200px;
+          height: 200px;
+          opacity: 0;
+        }
+      }
+    </style>
+    </head>
+    <body>
+    <div id="binary-matrix"></div>
+    <div id="hologram">
+      <div id="center-circle"></div>
+      <div id="sparks-container"></div>
+    </div>
+    <div id="status">Haz clic en el círculo central para hablar con Finace AI</div>
+    <iframe id="browser-frame" src="about:blank"></iframe>
+    <button id="close-browser">Cerrar navegador</button>
+    
+    <script>
+      const hologram = document.getElementById('hologram');
+      const status = document.getElementById('status');
+      const binaryMatrix = document.getElementById('binary-matrix');
+      const browserFrame = document.getElementById('browser-frame');
+      const closeBrowserButton = document.getElementById('close-browser');
+      const sparksContainer = document.getElementById('sparks-container');
+      const centerCircle = document.getElementById('center-circle');
+      let isListening = false;
+      let recognition;
+      let ovals = [];
+    
+      // Crear óvalos holográficos
+      for (let i = 0; i < 5; i++) {
+        const oval = document.createElement('div');
+        oval.className = 'oval';
+        oval.style.width = `${60 + i * 10}%`;
+        oval.style.height = `${60 + i * 10}%`;
+        oval.style.left = `${20 - i * 5}%`;
+        oval.style.top = `${20 - i * 5}%`;
+        oval.style.animationDelay = `${i * 0.5}s`;
+        hologram.appendChild(oval);
+        ovals.push(oval);
+      }
+    
+      // Add new binary matrix generation code
+      function createBinaryColumn() {
+        const column = document.createElement('div');
+        column.className = 'binary-column';
+        column.style.left = `${Math.random() * 100}%`;
+        
+        const columnHeight = Math.floor(Math.random() * 10) + 10; // 10 to 20 digits
+        
+        for (let i = 0; i < columnHeight; i++) {
+          const digit = document.createElement('span');
+          digit.className = 'binary-digit';
+          digit.textContent = Math.random() < 0.5 ? '0' : '1';
+          digit.style.animationDelay = `${Math.random() * 2}s`;
+          column.appendChild(digit);
+        }
+        
+        binaryMatrix.appendChild(column);
+        
+        setTimeout(() => {
+          column.remove();
+        }, 20000); // Remove after animation duration
+      }
+    
+      // Generate new columns periodically
+      setInterval(createBinaryColumn, 500);
+    
+      function createSpark() {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 50 + 25;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        
+        spark.style.setProperty('--tx', `${tx}px`);
+        spark.style.setProperty('--ty', `${ty}px`);
+        
+        spark.style.left = '50%';
+        spark.style.top = '50%';
+        
+        sparksContainer.appendChild(spark);
+        
+        setTimeout(() => {
+          spark.remove();
+        }, 500);
+      }
+    
+      function emitSparks() {
+        const sparkCount = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i < sparkCount; i++) {
+          setTimeout(createSpark, Math.random() * 200);
+        }
+      }
+    
+      setInterval(emitSparks, 300);
+    
+      function createSolarFlare() {
+        const flare = document.createElement('div');
+        flare.className = 'solar-flare';
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 50 + 50;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        
+        flare.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px))`;
+        
+        hologram.appendChild(flare);
+        
+        flare.animate([
+          { width: '0', height: '0', opacity: 0.8 },
+          { width: '200px', height: '200px', opacity: 0 }
+        ], {
+          duration: 2000,
+          easing: 'ease-out'
+        }).onfinish = () => flare.remove();
+      }
+    
+      function emitSolarFlares() {
+        const flareCount = Math.floor(Math.random() * 2) + 1;
+        for (let i = 0; i < flareCount; i++) {
+          setTimeout(createSolarFlare, Math.random() * 500);
+        }
+      }
+    
+      // Añadir este línea a los intervalos existentes
+      setInterval(emitSolarFlares, 3000);
+    
+      // Configurar reconocimiento de voz
+      if ('webkitSpeechRecognition' in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'es-CO';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+    
+        recognition.onresult = function(event) {
+          const last = event.results.length - 1;
+          const command = event.results[last][0].transcript.toLowerCase().trim();
+          
+          hologram.style.boxShadow = '0 0 50px rgba(0, 255, 255, 0.7)';
+          setTimeout(() => hologram.style.boxShadow = 'none', 300);
+          
+          handleCommand(command);
+        };
+    
+        recognition.onerror = function(event) {
+          console.error('Error en el reconocimiento de voz:', event.error);
+          status.textContent = 'Error en el reconocimiento de voz. Intenta de nuevo.';
+        };
+    
+        recognition.onend = function() {
+          isListening = false;
+          centerCircle.classList.remove('listening');
+          status.textContent = 'Haz clic en el círculo central para hablar con Finance AI';
+        };
+      } else {
+        centerCircle.style.display = 'none';
+        status.textContent = 'El reconocimiento de voz no está soportado en este navegador.';
+      }
+    
+      function handleCommand(command) {
+        console.log('Comando recibido:', command);
+        
+        if (command.includes('hola') || command.includes('cómo estás')) {
+          responder('Hola, estoy bien, gracias por preguntar. ¿En qué puedo ayudarte hoy?');
+        } else if (command.includes('qué hora es')) {
+          const ahora = new Date();
+          responder('La hora actual es ' + ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }));
+        } else if (command.includes('qué día es')) {
+          const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const fecha = new Date().toLocaleDateString('es-CO', opciones);
+          responder('Hoy es ' + fecha);
+        } else if (command.includes('cómo te llamas') || command.includes('cuál es tu nombre')) {
+          responder('Mi nombre es Finance AI, soy tu asistente virtual. Es un placer conocerte.');
+        } else if (command.includes('gracias')) {
+          responder('De nada, estoy aquí para ayudarte en lo que necesites.');
+        } else if (command.includes('adiós')) {
+          responder('Hasta luego, que tengas un excelente día. Estaré aquí si me necesitas.');
+        } else if (command.includes('abre bancos')) {
+          openWebsite('http://localhost:3000/pages/banks');
+        } else if (command.includes('abre youtube')) {
+          openWebsite('https://www.youtube.com');
+          responder('Abriendo YouTube')
+        } else if (command.includes('abrir facebook')) {
+          openWebsite('https://www.facebook.com');
+        } else if (command.includes('cerrar navegador')) {
+          closeBrowser();
+        } else if (command.includes('eres profesional')) {
+          responder('Sí, soy un profesional altamente calificado en finanzas personales, con más de 20 años de experiencia en inversiones, tasas de interés, manejo de productos financieros como CDTs y el sistema bancario colombiano. Estoy aquí para ayudarte a tomar decisiones financieras bien informadas, basadas en análisis detallados y conocimientos profundos del mercado');
+        } else if (command.includes('que es finanzas')) {
+          responder('Las finanzas son el estudio y la gestión del dinero, las inversiones y otros activos financieros. Se enfocan en cómo individuos, empresas y gobiernos adquieren, gastan, ahorran e invierten dinero para alcanzar sus objetivos. ¿nececitas ayuda acerca de las finanzas personales?');
+        } else if (command.includes('finanzas personales')|| command.includes('que son las finanzas personales')) {
+          responder('Las finanzas personales se refieren a la gestión eficiente de los recursos económicos de una persona o familia para alcanzar sus metas financieras a corto, mediano y largo plazo. Incluyen todo lo relacionado con cómo se gana, gasta, ahorra, invierte y protege el dinero, con el objetivo de mejorar la estabilidad y seguridad financiera, En términos más específicos, las finanzas personales abarcan áreas como, Presupuesto, Ahorro, Inversión, Manejo de deuda, Planificación financiera y Protección del patrimonio, ¿quieres saber mas acerca de una en especifico?');
+        } else if (command.includes('presupuesto') || command.includes('que es el presupuesto')) {
+          responder('Es la base de las finanzas personales. Implica planificar los ingresos y gastos de manera que se pueda cubrir las necesidades básicas (como vivienda, alimentación, educación, etc.) y se destinen recursos a metas más amplias, como ahorro e inversión.');
+        } else if (command.includes('ahorro') || command.includes('que es el ahorro')) {
+          responder('El dinero reservado para cubrir necesidades futuras o emergencias. Un fondo de emergencia, por ejemplo, es clave para manejar imprevistos sin recurrir al endeudamiento.');
+        } else if (command.includes('inversión') || command.includes('que es la Inversión')) {
+          responder('Una vez cubiertos los gastos esenciales y un ahorro adecuado, el dinero adicional puede invertirse para generar más ingresos a través de productos financieros como acciones, bonos, fondos mutuos, CDTs, inmuebles, entre otros. La inversión ayuda a hacer crecer el patrimonio y alcanzar metas como la jubilación o la compra de bienes importantes.');
+        } else if (command.includes('manejo de deuda') || command.includes('que es el manejo de deuda')) {
+          responder('Se refiere a cómo administrar préstamos, tarjetas de crédito o cualquier tipo de deuda. Las deudas, bien manejadas, pueden ser una herramienta útil (por ejemplo, una hipoteca), pero mal gestionadas, pueden comprometer la estabilidad financiera.');
+        } else if (command.includes('planificación financiera') || command.includes('que es la planificación financiera')) {
+          responder('Esto incluye metas como la jubilación, la educación de los hijos o la compra de una vivienda. Es esencial establecer objetivos claros y tomar decisiones que ayuden a cumplirlos a lo largo del tiempo.');
+        } else if (command.includes('protección del patrimonio') || command.includes('que es la protección del patrimonio')) {
+          responder('A través del seguro, las personas pueden proteger su patrimonio frente a riesgos como accidentes, enfermedades o desastres naturales.');
+        } else if (command.includes('de dónde eres') || command.includes('dónde naciste')) {
+          responder('Soy colombiano, nacido en Bogotá. Me enorgullece ser parte de esta hermosa ciudad y país.');
+        } else if (command.includes('quién te creó') || command.includes('quién te hizo')) {
+          responder('Fui creado por el equipo de trabajo de FinanceForecast. Me desarrollaron para ayudar en tareas del aplicativo, especialmente para resolver dudas de los clientes.');
+        } else if (command.includes('para qué fuiste creado') || command.includes('cuál es tu propósito')) {
+          responder('Mi propósito principal es ayudar en tareas del aplicativo, especialmente resolver dudas de los clientes. Estoy aquí para proporcionar información y asistencia en lo que necesiten.');
+        } else if (command.includes('dónde trabajas') || command.includes('en qué empresa trabajas') || command.includes('cuál es tu Proyecto')) {
+          responder('Soy un asistente virtual en el aplicativo FinanceForecast, un aplicatvio dedicado a la mejora de las finanzas personales de los colombianos, informacion bancaria como Tasas de interes, cuotas de manejo y de mas informacion referente a las finanzas de los colombianos');
+        } else if (command.includes('qué servicios ofreces') || command.includes('servicios disponibles')) {
+          responder('Algunos de los servicios que ofrezco incluyen, Asesoría Financiera Personalizada, Asesoría en Inversiones, Planificación para la Jubilación, Manejo de Deudas y Crédito, Planificación de Grandes Metas Financieras, Protección Financiera y Seguros Y Educación Financiera');
+        } else if (command.includes('qué puedes hacer')) {
+          responder('Como un experto en finanzas personales con amplia experiencia, puedo ofrecer una variedad de servicios enfocados en mejorar tu bienestar financiero, ayudarte a tomar decisiones informadas y optimizar tus recursos');
+        } else if (command.includes('cuántos años tienes') || command.includes('qué edad tienes')) {
+          responder('Como una inteligencia artificial avanzada no tengo años, pero sí tengo una fecha de creación que es el nueve de octubre de 2024.');
+        } else {
+          responder('Lo siento, no entendi tu pregunta. ¿Puedes repetirlo o formularlo de otra manera?');
+        }
+      }
+    
+      function responder(texto) {
+        const speech = new SpeechSynthesisUtterance(texto);
+        speech.lang = 'es-CO';
+        
+        speech.onstart = () => {
+          ovals.forEach(oval => oval.classList.add('glowing'));
+        };
+        
+        speech.onend = () => {
+          ovals.forEach(oval => oval.classList.remove('glowing'));
+        };
+        
+        speechSynthesis.speak(speech);
+      }
+    
+      function openWebsite(url) {
+        window.open(url, '_blank');  // Abre en una nueva pestaña
+      }
+    
+      function closeBrowser() {
+        browserFrame.src = 'about:blank';
+        browserFrame.style.display = 'none';
+        closeBrowserButton.style.display = 'none';
+        responder('Cerrando el navegador');
+      }
+    
+      centerCircle.addEventListener('click', () => {
+        if (!isListening) {
+          recognition.start();
+          isListening = true;
+          centerCircle.classList.add('listening');
+          status.textContent = 'Finance AI está escuchando...';
+        } else {
+          recognition.stop();
+          isListening = false;
+          centerCircle.classList.remove('listening');
+          status.textContent = 'Haz clic en el círculo central para hablar con Finance AI';
+        }
+      });
+      
+      closeBrowserButton.addEventListener('click', closeBrowser);
+    </script>
+    </body></html>
