@@ -130,7 +130,7 @@ export default function HomePage() {
             
           </div>
           <div className='flex items-center justify-center pt-12 pb-14'>
-           <a href="./pages/banks"> <button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Ingresa al módulo de Bancos</button> </a>
+           <a href="./pages/banks"> <button className='mt-5 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Ingresa al módulo de Bancos</button> </a>
           </div>
         </section>
         <hr className=' w-full size-1.5 pr-44 bg-tahiti ' />
