@@ -13,11 +13,11 @@ export default  function finanzasPersonales() {
     <Navegar></Navegar>
     <main className="container mx-auto py-8">
     <section className="mb-12">
-    <h1 className="text-4xl font-bold font-mono mb-10 mt-10 text-center pl-40 pr-40">Gestiona y organiza tus recursos diarios sin complicaciones mejora tus finanzas con facilidad</h1>
+    <h1 className="text-4xl font-bold font-mono mb-10 mt-5 text-center pl-40 pr-40">Gestiona y organiza tus recursos diarios sin complicaciones mejora tus finanzas con facilidad</h1>
     <p className="text-xl mb-6"></p>
     <div className='flex justify-center flex-col items-center'>
         <p className="text-2xl font-semibold mb-10 ">Conoce a Nuestro Asistente Virtual Finance AI</p>
-        <a href="./financeAi"><button className='mb-5 px-10 py-3 text-white bg-cyan-600 hover:bg-cyan-700 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Finance AI</button></a>
+        <a href="./financeAi"><button className='mb-5 px-10 py-3 text-white bg-cyan-600 hover:bg-cyan-800 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Finance AI</button></a>
     </div>
     
     <hr className=' w-full size-1.5 mt-8 pr-44 bg-tahiti' />

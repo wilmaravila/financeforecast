@@ -29,8 +29,8 @@ export default function HomePage() {
 
           <p className='pt-10 text-36 '>Gestiona tus cuentas, optimiza tus ahorros y toma decisiones informadas, todo desde una plataforma que reúne la mejor información bancaria en un solo lugar.</p>
           <div className='flex justify-center flex-col items-center'> 
-              <a href="./pages/auth/register"><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-tahiti bg-indigo-400	'>Regístrate de forma gratuita</button></a>
-              <p className='text-bold'>¿Ya tienes una cuenta? <a href="./pages/auth/login">Inicia sesión</a></p>
+              <a href="./pages/auth/register"><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Regístrate de forma gratuita</button></a>
+              <p className='text-bold mt-2'>¿Ya tienes una cuenta? <a href="./pages/auth/login">Inicia Sesión</a></p>
             </div> 
         </section>
 
@@ -86,7 +86,7 @@ export default function HomePage() {
             
           </div>
           <div className='flex items-center justify-center pt-12 pb-14'>
-            <a href="./pages/finanzasPersonales"><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-tahiti bg-indigo-400'>Ingresa al módulo de finanzas</button></a>
+            <a href="./pages/finanzasPersonales"><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Ingresa al módulo de Finanzas</button></a>
           </div>
         </section>
         <hr className=' w-full size-1.5 pr-44 bg-tahiti ' />
@@ -130,7 +130,7 @@ export default function HomePage() {
             
           </div>
           <div className='flex items-center justify-center pt-12 pb-14'>
-           <a href="./pages/banks"> <button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-tahiti bg-indigo-400'>Ingresa al módulo de finanzas</button> </a>
+           <a href="./pages/banks"> <button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Ingresa al módulo de Bancos</button> </a>
           </div>
         </section>
         <hr className=' w-full size-1.5 pr-44 bg-tahiti ' />
