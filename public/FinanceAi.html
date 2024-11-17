@@ -454,6 +454,14 @@
       function responder(texto) {
         const speech = new SpeechSynthesisUtterance(texto);
         speech.lang = 'es-CO';
+
+        const voces = speechSynthesis.getVoices();
+
+        const vozSeleccionada = voces.find(voz => voz.name === 'Microsoft David Desktop - Español (Latinoamérica)');
+
+        if (vozSeleccionada) {
+        speech.voice = vozSeleccionada;
+        }
         
         speech.onstart = () => {
           ovals.forEach(oval => oval.classList.add('glowing'));
@@ -485,12 +493,14 @@
           status.textContent = 'Finance AI está escuchando...';
         } else {
           recognition.stop();
-          isListening = false;
           centerCircle.classList.remove('listening');
           status.textContent = 'Haz clic en el círculo central para hablar con Finance AI';
         }
       });
       
       closeBrowserButton.addEventListener('click', closeBrowser);
+      window.speechSynthesis.onvoiceschanged = () => {
+      console.log('Voces cargadas');
+      };
     </script>
     </body></html>
