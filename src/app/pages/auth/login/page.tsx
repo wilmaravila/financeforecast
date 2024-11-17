@@ -1,14 +1,16 @@
 'use client'
 import { ChangeEvent,useState } from "react"
 
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import Image from "next/image"
 import bankingImage from '../../../assets/images/Logo.png' 
 import InputC from "../../../utils/InputC"
-import useAuth from '../../../api/controller';
+import useAuth from '../../../Controllers/controller';
 import { useRouter } from 'next/navigation';
 import Input from "../../../utils/Input"
 import Button from "./Button"
-import { promises } from "dns"
+
 
 
 
@@ -40,30 +42,49 @@ export default function LoginForm() {
     setPass(e.target.value);
 
   }
-
-  const handleSutmid =(e) =>{
-    e.preventDefault(); 
-
-  }
-
-  const handleButton = () => {
-    
+  const handleSutmid = async (e: React.FormEvent) => {
+    e.preventDefault();
+        
     const esta = login(userCorreo,pass);
      console.log(esta);
      esta.then((value) => {
       if(value){
-        router.push('../finanzasPersonales');
+        // router.push('../finanzasPersonales');
   
       }else{
         alert('El usuario o la contraseña son incorrectos')
       }
+  })
 
-     });
+  //   try {
+  //     const esta = await login(userCorreo, pass); // 'login' debe devolver una Promesa.
+  //     if (esta) {
+  //       const response = await axios.post('/api/auth/login', { email: userCorreo, password: pass });
+  //       Cookies.set('authToken', response.data.token, {
+  //         expires: 7, // Token dura 7 días
+  //         secure: true,
+  //         sameSite: 'Strict',
+  //       });
+  //       router.push('/finanzasPersonales');
+  //     } else {
+  //       alert('El usuario o la contraseña son incorrectos');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error durante el inicio de sesión:', error);
+  //     alert('Error al iniciar sesión, revisa tus datos.');
+  //   }
+  // };
+  }
+
+  const handleButton =  async() => {
+
+
+};
      
    
     
     // Aquí puedes añadir la lógica de inicio de sesión
-  };
+ 
   
 
 
@@ -111,7 +132,7 @@ export default function LoginForm() {
           </div>
             <form id="from" name="form" onSubmit={handleSutmid} >
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label id="email" className="block text-sm font-medium text-gray-700">
                   Correo electrónico
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
@@ -133,7 +154,7 @@ export default function LoginForm() {
               </div>
 
               <div className="pt-3">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label id="password" className="block text-sm font-medium text-gray-700">
                   Contraseña
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
@@ -156,7 +177,7 @@ export default function LoginForm() {
             <div className="flex items-center justify-between pt-3">
               <div className="flex items-center">
                 <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                <label id="remember-me" className="ml-2 block text-sm text-gray-900">
                   Recordarme
                 </label>
               </div>
@@ -170,9 +191,10 @@ export default function LoginForm() {
             <div className="pt-6">
               <button
                 type="submit"
-                onClick={handleButton}
+                
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 ease-in-out transform hover:scale-105"
                 disabled={isLoading}
+                onClick={handleButton}
                 
               >
                 {isLoading ? (
@@ -185,6 +207,7 @@ export default function LoginForm() {
               </button>
               
             </div>
+           </form> 
           
             
             <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center">
@@ -196,7 +219,7 @@ export default function LoginForm() {
               </p>
             </div>
 
-          </form>     
+         
           
         </div>
 

@@ -1,13 +1,16 @@
+// src/app/layout.tsx
+
+// Elimina "use client"
 import localFont from "next/font/local";
 import "./globals.css";
-import { parseCookies } from 'nookies';
-
+import { parseCookies } from "nookies";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -21,14 +24,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   const { nonce } = parseCookies();
+
   return (
     <html lang="en">
-      
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        
-
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
         <script
           nonce={nonce}

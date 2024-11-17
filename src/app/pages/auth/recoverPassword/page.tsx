@@ -3,7 +3,7 @@ import bankingImage from '../../../assets/images/Logo.png'
 import Image from 'next/image'
 import Input from "../../../utils/Input"
 import { useState } from 'react'
-import useAuth from '../../../api/controller';
+import useAuth from '../../../Controllers/controller';
  export default function recoverPassword(){
 
    const [email,setEmail] = useState(''); 
@@ -15,7 +15,7 @@ import useAuth from '../../../api/controller';
    }
    
   const handleButton = () => {
-    console.log(email);
+    
     recoverPassword(email);
     
 

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    
     "lib": [
       "dom",
       "dom.iterable",
@@ -20,15 +21,17 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/**/*"
-, "backend/utils/sendEmail.js"  ],
+    "src/**/*",
+    "backend/utils/sendEmail.js"
+  ],
   "exclude": [
     "node_modules"
   ]

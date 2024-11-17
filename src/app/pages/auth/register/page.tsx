@@ -1,13 +1,14 @@
 
 'use client'
 import { useState,FormEvent } from "react"
-import useAuth from '../../../api/controller';
-
+import register from '../../../Controllers/registerController';
+import { useRouter } from 'next/navigation';
 import Image from "next/image"
 import bankingImage from '../../../assets/images/Logo.png' 
 import Input from "../../../utils/Input"
 import Button from "../login/Button"
 import InputC from "../../../utils/InputCR"
+import { promises } from "dns";
 
 
 
@@ -16,12 +17,12 @@ import InputC from "../../../utils/InputCR"
 
 export default function LoginForm() {
 
-  const {register} = useAuth();
 
   const handleGoogleSignIn = () => {
     // Implement Google Sign-In logic here
     console.log('Signing in with Google')
   }
+  const router = useRouter(); 
   const [isLoading, setIsLoading] = useState(false)
   const [password,setPassword] = useState('')
   const [formData, setFormData] = useState({
@@ -52,21 +53,27 @@ export default function LoginForm() {
     console.log("Datos del formulario: ", formData);
     // Aquí puedes enviar los datos a tu backend o hacer alguna otra acción
   }
-  const handleButton = (e) =>{
+  const handleButton = async(e) =>{
     console.log(formData);
     if(formData.password == formData.passwordC){
       if(formData != null &&   formData.nombre !=""&& formData.apellidos !=""&& formData.dateNacimiento !=""&& formData.email !="" ){
 
-        register(formData.nombre,formData.apellidos,formData.dateNacimiento,formData.email,formData.password)
+       let  respuesta = await  register(formData.nombre,formData.apellidos,formData.dateNacimiento,formData.email,formData.password)
+        console.log(respuesta);
+
+        if (respuesta) {
+          alert("El usuario ha sido registrado exitosamente.");
+          router.push('../finanzasPersonales');
+        } else {
+          alert("Hubo un problema al registrar el usuario.");
+        }
+      }else{
+        alert('por favor ingresar todos los datos solicitados');
+      };
         
 
 
-      }else{
-        alert('por favor ingresar todos los datos solicitados');
-      }
-    } else{
-
-      alert('claves no coiciden');
+      }else{alert('claves no coiciden');
     } 
 
   }

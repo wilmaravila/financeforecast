@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image'; // Si usas Next.js
 
+//import bankingIdmage from '../finanzasPersonales';
 // Imagenes locales o desde public
 import bankingImage from '../../assets/images/Logo.png';
 
@@ -13,10 +14,10 @@ export default function busqueda (){
     <span className="text-xl font-bold text-blue-600">FinanceForecast</span>
     </a>
     <nav className="flex items-center space-x-4">
-    <a href="../" className="text-sm font-medium text-gray-600 hover:text-blue-600">Home</a>
-    <a href="./finanzasPersonales" className="text-sm font-medium text-gray-600 hover:text-blue-600">Finanzas Personales</a>
+    <a href="../../" className="text-sm font-medium text-gray-600 hover:text-blue-600">Home</a>
+    <a href="../pages/finanzasPersonales" className="text-sm font-medium text-gray-600 hover:text-blue-600">Finanzas Personales</a>
     <a href="/" className="text-sm font-semibold text-black">Bancos</a>
-    <a href='./auth/login'><button className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-1 rounded">Login</button></a>
+    <a href='../pages/auth/login'><button className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-1 rounded">Login</button></a>
     </nav>
     </header>
     ) 
