@@ -61,11 +61,13 @@ export default function LoginForm() {
        let  respuesta = await  register(formData.nombre,formData.apellidos,formData.dateNacimiento,formData.email,formData.password)
         console.log(respuesta);
 
-        if (respuesta) {
+        if (respuesta === 200) {
           alert("El usuario ha sido registrado exitosamente.");
           router.push('../finanzasPersonales');
-        } else {
-          alert("Hubo un problema al registrar el usuario.");
+        } else if(respuesta === 400) {
+          alert("El Usuario ya existe");
+        }else{
+          alert('Hubo un problema al crear el usuario')
         }
       }else{
         alert('por favor ingresar todos los datos solicitados');
@@ -123,8 +125,10 @@ export default function LoginForm() {
                 name="nombre" 
                 type="text" required  
                 placeholder="Andres Felipe"
+                
                 value={formData.nombre}
                 onChange={handleChange} 
+                
                 />
                 
               </div>

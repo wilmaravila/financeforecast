@@ -6,6 +6,7 @@
     try {
       const response = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -13,13 +14,8 @@
       });
   
       // Aquí comprobamos si la respuesta fue exitosa (código de estado 2xx)
-      if (response.ok) {
-        const data = await response.json();  // Convertimos la respuesta en JSON (si es necesario)
-        console.log(data);  // Puedes hacer algo con la respuesta aquí si la necesitas
-        return true;  // Si la respuesta es exitosa, retornamos true
-      }
-      
-      return false;  // Si la respuesta no fue exitosa (código de estado fuera de 2xx), retornamos false
+      return response.status;
+     // Si la respuesta no fue exitosa (código de estado fuera de 2xx), retornamos false
       
     } catch (error) {
       console.error('Error en el registro:', error);

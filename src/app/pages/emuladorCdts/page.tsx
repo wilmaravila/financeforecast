@@ -1,10 +1,38 @@
 'use client'
 import useAuth from '../../Controllers/controller'
 import Navegar from '../../Layauts/layoutEmulador'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import DynamicTable from './tabla'
+import { useRouter } from 'next/navigation'
 
 export default function Emulador() {
+    const {getCookie} =useAuth();
+
+
+    const router = useRouter();
+    useEffect(() =>  {
+      // Leer la cookie 'token' al carconst token = Cookies.get('token');
+      
+      const validar =async ()=>{
+      const token = await getCookie();
+    console.log(token);
+      if (!token) {
+        // Si no hay token, redirigir al login\
+        router.push('../pages/auth/login')
+        
+      }else{
+        
+    }
+  }
+    validar();
+  }, );
+
+
+
+
+
+
+
     const { DateTable } = useAuth();
     
     const [inversionValue, setInversionValue] = useState('') // Para la cantidad a invertir
@@ -64,7 +92,7 @@ export default function Emulador() {
         // Lógica de emulación
         setHeaders([])
         setResults([]);
-        const data = await DateTable(seleccion);
+        const data = await DateTable();
         if (data && data.length > 0) {
             if (seleccion === 'Mensual') {
                 const headers = ['Entidad', 'Tase de Interes', 'Ganancia Total'];

@@ -1,10 +1,41 @@
+'use client'
 import React from 'react';
 import Image from 'next/image'; // Si usas Next.js
+import { parseCookies } from 'nookies';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useAuth from '../Controllers/controller'
+
 
 // Imagenes locales o desde public
 import Logo from '../assets/images/Logo.png';
 
+
 export default function busqueda (){
+
+  const {getCookie} =useAuth();
+  const [isLoading,setIsLoading] = useState('')
+  const [location, setLocation] = useState('')
+
+  const router = useRouter();
+  useEffect(() =>  {
+    // Leer la cookie 'token' al carconst token = Cookies.get('token');
+    
+    const validar =async ()=>{
+    const token = await getCookie();
+  console.log(token);
+    if (!token) {
+      // Si no hay token, redirigir al login
+      setIsLoading('Login');
+      setLocation('./pages/auth/login') 
+    }else{
+    setIsLoading('Sign out');
+    setLocation('./pages/auth/cierreSession');
+  }
+}
+  validar();
+}, );
 
   return( 
     <header className="flex items-center justify-between p-4 bg-white shadow-md">
@@ -16,7 +47,7 @@ export default function busqueda (){
     <a href="/" className="text-sm font-semibold text-blac  ">Home</a>
     <a href="./pages/finanzasPersonales" className="text-sm font-medium text-gray-600 hover:text-blue-600 ">Finanzas Personales</a>
     <a href="./pages/banks" className="text-sm font-medium text-gray-600 hover:text-blue-600">Bancos</a>
-    <a href='./pages/auth/login'><button className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-1 rounded">Login</button></a>
+  <a href={location}><button className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-1 rounded">{isLoading}</button></a>
     </nav>
     </header>
   )

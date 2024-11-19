@@ -1,8 +1,7 @@
 'use client'
 import { ChangeEvent,useState } from "react"
 
-import axios from 'axios';
-import Cookies from 'js-cookie';
+
 import Image from "next/image"
 import bankingImage from '../../../assets/images/Logo.png' 
 import InputC from "../../../utils/InputC"
@@ -23,7 +22,8 @@ import Button from "./Button"
 export default function LoginForm() {
  
 
-
+  const [passwordError, setPasswordError] = useState('');
+  const [asignar, setAsignar] = useState('');
   const {login} =useAuth();
   const router = useRouter(); 
   const handleGoogleSignIn = () => {
@@ -45,16 +45,20 @@ export default function LoginForm() {
   const handleSutmid = async (e: React.FormEvent) => {
     e.preventDefault();
         
-    const esta = login(userCorreo,pass);
+    const esta = await login(userCorreo,pass);
      console.log(esta);
-     esta.then((value) => {
-      if(value){
+
+
+     
+    
+      if(esta){
+        window.location.href = '../banks';
         // router.push('../finanzasPersonales');
   
       }else{
-        alert('El usuario o la contraseña son incorrectos')
+        setPasswordError('El usuario o contraseña son incorrectos');
       }
-  })
+  }
 
   //   try {
   //     const esta = await login(userCorreo, pass); // 'login' debe devolver una Promesa.
@@ -74,7 +78,7 @@ export default function LoginForm() {
   //     alert('Error al iniciar sesión, revisa tus datos.');
   //   }
   // };
-  }
+  
 
   const handleButton =  async() => {
 
@@ -187,6 +191,9 @@ export default function LoginForm() {
                 </a>
               </div>
             </div>
+            <br hidden={true}/>
+
+            {passwordError && <p className="text-red-500">{passwordError}</p>}
 
             <div className="pt-6">
               <button

@@ -5,11 +5,37 @@ import Image from 'next/image';
 import jubilacion from '../../assets/images/jubilacion.jpg';
 import regla from '../../assets/images/regla72.jpeg';
 import inv from '../../assets/images/inversion2.png';
-import { useState } from 'react';
-import { Button } from '../../Button';
-
+import { useState,useEffect } from 'react';
+import useAuth from '../../Controllers/controller';
+import { useRouter } from 'next/navigation';
 
 export default  function finanzasPersonales() {
+  const {getCookie} =useAuth();
+
+
+  const router = useRouter();
+  useEffect(() =>  {
+    // Leer la cookie 'token' al carconst token = Cookies.get('token');
+    
+    const validar =async ()=>{
+    const token = await getCookie();
+  console.log(token);
+    if (!token) {
+      // Si no hay token, redirigir al login\
+      // router.push('../pages/auth/login')
+       window.location.href = '../pages/auth/login'
+      
+    }else{
+      
+  }
+}
+  validar();
+}, );
+
+  
+
+// bloqueo aplicacion fin
+
   const [showInvestmentDetails, setShowInvestmentDetails] = useState(false);
   const [showRetirementDetails, setShowRetirementDetails] = useState(false);
   const [showRuleDetails, setShowRuleDetails] = useState(false);

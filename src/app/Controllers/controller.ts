@@ -15,11 +15,14 @@ function useAuth() {
     const user = { email, password };
     try {
         const response = await fetch('http://localhost:5000/api/login', {
+          
             method: 'POST', // Cambiar a POST
             headers: {
                 'Content-Type': 'application/json', // Establecer el tipo de contenido
             },
+            
             body: JSON.stringify(user),
+            credentials: 'include',
             
         });
        
@@ -27,10 +30,13 @@ function useAuth() {
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error || 'Error en la autenticación');
+         
         }
 
-        const data = await response.ok;
-        if(data == true){
+        const data = await response;
+        
+        console.log(data)
+        if(data.ok){
           return true;
         }else{
           return false;
@@ -46,11 +52,12 @@ function useAuth() {
 
   // Función para login
 
-const DateTable = async(tiempo) =>{
+const DateTable = async() =>{
   try{
 
     const response = await fetch('http://localhost:5000/api/dateCdts', {
       method: 'GET',
+     
     });
     
     if (!response.ok) {
@@ -88,10 +95,13 @@ const DateTable = async(tiempo) =>{
       const response = await fetch('http://localhost:5000/api/recoverPassword',{
 
         method: 'POST',
+        
         headers:{ 'Content-Type': 'application/json'},
         body: JSON.stringify({email})
       })
+      console.log(response)
       return response.ok;
+      
 
     }catch(error){
 
@@ -129,13 +139,63 @@ const DateTable = async(tiempo) =>{
   };
 
   // cambio de password
-  const changePassword =(password)=>{
+  const changePassword = async(email,password)=>{
+    const user = { email, password };
+    try {
+        const response = await fetch('http://localhost:5000/api/ingreso_password', {
+            method: 'POST', // Cambiar a POST
+            headers: {
+                'Content-Type': 'application/json', // Establecer el tipo de contenido
+            },
+            body: JSON.stringify(user),
+            
+        });
+       
+        // Verificar si la respuesta fue exitosa
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error en la autenticación');
+        }
+
+        const data = await response.ok;
+        console.log(data)
+          return data;
+        
+         // Retornar los datos de la respuesta
+    } catch (error) {
+        setError(error.message);  // Establecer el error en el estado
+    }
+  }
+  const cierreSession = async() =>{
+    const response = await fetch('http://localhost:5000/api/logout', {
+      method: 'POST', // Cambiar a POST
+      credentials: 'include',
+      headers: {
+          'Content-Type': 'application/json', // Establecer el tipo de contenido
+      },
+    })
+    const respuesta = await response.json();
+    return respuesta;
 
   }
+  const getCookie = async ()=>{
+    const response = await  fetch('http://localhost:5000/api/getCookie', {
+    method: 'GET', // Cambiar a POST
+    credentials: 'include',
+    headers: {
+        'Content-Type': 'application/json', // Establecer el tipo de contenido
+    },
+
+  })
+  console.log(response)
+  const valor = response;
+  console.log(valor);
+  return response.ok;
+}
   
   
 
-  return { login, error, message,recoverPassword,resetPassword,changePassword,DateTable,calcularGanancia };  // Devuelve las funciones y los estados necesarios
+  return { login, error, message,recoverPassword,resetPassword,changePassword,DateTable,calcularGanancia,cierreSession,getCookie };  // Devuelve las funciones y los estados necesarios
 }
 
 export default useAuth;

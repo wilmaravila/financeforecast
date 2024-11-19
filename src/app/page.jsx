@@ -1,4 +1,4 @@
-import React from 'react';
+ 'use client'
 import Image from 'next/image';// Si usas Next.js
 import bienestar from './assets/images/business.jpg'
 import Button from './Button';
@@ -11,10 +11,33 @@ import inversiones from './assets/images/inversiones.png'
 // Imagenes locales o desde public
 import Navegar from './utils/LayoutInicio'
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useAuth from './Controllers/controller'
 
 
 
 export default function HomePage() {
+  const [visible, setVisible] = useState(true);
+  const {getCookie} =useAuth();
+
+
+  const router = useRouter();
+  useEffect(() =>  {
+    // Leer la cookie 'token' al carconst token = Cookies.get('token');
+    
+    const validar =async ()=>{
+    const token = await getCookie();
+  console.log(token);
+    if (!token) {
+      // Si no hay token, redirigir al login
+      setVisible(true)
+    }else{
+      setVisible(false)
+  }
+}
+  validar();
+}, );
   return (
     
     <div className="flex flex-col min-h-screen">
@@ -28,10 +51,10 @@ export default function HomePage() {
           <h1 className='text-5xl font-bold	font-mono'>Planifica con inteligencia, disfruta con tranquilidad</h1>
 
           <p className='pt-10 text-36 '>Gestiona tus cuentas, optimiza tus ahorros y toma decisiones informadas, todo desde una plataforma que reúne la mejor información bancaria en un solo lugar.</p>
-          <div className='flex justify-center flex-col items-center'> 
-              <a href="./pages/auth/register"><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Regístrate de forma gratuita</button></a>
-              <p className='text-bold mt-2'>¿Ya tienes una cuenta? <a href="./pages/auth/login">Inicia Sesión</a></p>
-            </div> 
+         { visible && <div className='flex justify-center flex-col items-center'  > 
+              <a href="./pages/auth/register" ><button className='mt-20 flex justify-center items-center rounded w-96 h-11 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out font-bold'>Regístrate de forma gratuita</button></a>
+              <p className='text-bold mt-2' >¿Ya tienes una cuenta? <a href="./pages/auth/login">Inicia Sesión</a></p>
+            </div> }
         </section>
 
         <section className='pt-12  pb-28 flex '>

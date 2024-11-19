@@ -12,12 +12,15 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 // Middlewarea
-app.use(cors()); // Permitir CORS
+
 app.use(express.json()); 
 
 
 
 const mysql = require('mysql2/promise');
+const path = require('path');
+const { redirect } = require('next/dist/server/api-utils');
+const { validate } = require('node-cron');
 
 
 
@@ -31,74 +34,75 @@ const connection = mysql.createPool({
 });
 
 // Conectar a la base de datos
-const corsOptions = {
-  origin: 'http://localhost:3000',  // Permite solo solicitudes de este origen
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
-  credentials: true,  // Permite el uso de cookies y credenciales
-};
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: 'http://localhost:3000', // Cambia esto a la dirección exacta de tu frontend
+  credentials: true,                // Permitir cookies y encabezados con credenciales
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+}));
+
+app.options('*', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Asegúrate de que coincida con el origen
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.status(204).end();
+});
 app.use(express.json());
 app.use(cookieParser());
 
-app.post('/api/login', async(req, res) => {
-   
-  
-    const { email, password } = req.body;
-    
-    console.log(email);
-    console.log(password);
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+  console.log(email)
+ console.log(password)
+  if (!email || !password) {
+      return res.status(400).json({ error: 'Correo y contraseña son obligatorios' });
+  }
 
-    // Validación de campos
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Correo y contraseña son obligatorios' });
-    }
+  let connectionR;
 
-    let connectionR;
+  try {
+      connectionR = await connection.getConnection();
 
-    try {
-        // Obtener una conexión desde el pool
-        connectionR = await connection.getConnection();
+      // Buscar el usuario por correo
+      const querybusqueda = 'SELECT * FROM credenciales WHERE correo = ?';
+      const [rows] = await connectionR.query(querybusqueda, [email]);
 
-        // Buscar el usuario por correo
-        const querybusqueda = 'SELECT * FROM credenciales WHERE correo = ?';
-        const [rows] = await connectionR.query(querybusqueda, [email]);
-        console.log(rows);
-        if (rows.length === 0) {
-            // Si no encontramos el correo, el usuario no existe
-            return res.status(400).json({ error: 'Credenciales incorrectas' });
-        }
+      if (rows.length === 0) {
+          return res.status(400).json({ error: 'Credenciales incorrectas' });
+      }
 
-        const user = rows[0];
+      const userDB = rows[0];
+     console.log(userDB)
+      const isMatch = await bcrypt.compare(password, userDB.password);
+      console.log(isMatch)
 
-        // Comparar la contraseña ingresada con la encriptada
-        const isMatch = await bcrypt.compare(password, user.password);
-        console.log(isMatch);
+      if (!isMatch) {
+          return res.status(400).json({ error: 'Credenciales incorrectas', success: false });
+      }
 
-        if (!isMatch) {
-            // Si la contraseña no coincide
-            return res.status(400).json({ error: 'Credenciales incorrectas',success:false });
-        }
-        // token verificacion
-        const token = jwt.sign({id: user.usuario_id, email: user.correo },process.env.SECRET_JWT_KEY,{expiresIn: '1h'})
+      // Configuración de la cookie
+      const token = jwt.sign({ email: userDB.correo }, process.env.SECRET_JWT_KEY, {
+          expiresIn: '1d',
+      });
 
-        // Si la contraseña es correcta, continuar con el proceso de autenticación
-        res.cookie('access_token', token, {
+      res.cookie('token', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',  // Solo en producción
-          sameSite: 'None',  // Necesario para solicitudes cross-origin
-          maxAge: 1000 * 60 * 60,
-        });
-        
-        
-        console.log('Cookie creada con token:', token);
-       return res.status(200).json({ message: 'Inicio de sesión exitoso', success: true });
-    } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        res.status(500).json({ error: 'Error en la operación' });
-    } finally {
-        if (connectionR) connectionR.release(); // Asegurar la liberación de la conexión
-    }
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 24 * 60 * 60 * 1000, // 1 día
+      });
+
+      // Envía la respuesta una sola vez
+      res.status(200).json({ success: true, message: 'Inicio de sesión exitoso' });
+  } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      res.status(500).json({ error: 'Error en la operación' });
+  } finally {
+      if (connectionR) connectionR.release();
+  }
 });
+
 
 //registra persona
 app.get('/api/dateCdts', async (req, res) => {
@@ -159,8 +163,19 @@ app.post('/api/register', async(req, res) => {
 
         // Confirmar la transacción si todo fue exitoso
         await connectionR.commit();
+        // Configuración de la cookie
+      const token = jwt.sign({ email: email  }, process.env.SECRET_JWT_KEY, {
+        expiresIn: '1d',
+    });
+
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000, // 1 día
+    });
         
-       return res.status(201).json({ message: 'Usuario agregado exitosamente' });
+       return res.status(200).json({ message: 'Usuario agregado exitosamente' });
     } catch (error) {
         if (connectionR) await connectionR.rollback(); // Si hay un error, hacemos rollback
         console.error('Error al agregar el usuario:', error);
@@ -173,6 +188,10 @@ app.post('/api/register', async(req, res) => {
 function generateResetToken() {
     return crypto.randomBytes(32).toString('hex');  // Genera un token único de 64 caracteres
 }
+
+
+
+
 app.post('/api/recoverPassword',async(req,res)=>{
     let token =generateResetToken();
     const expiration = 30 * 60 * 1000;
@@ -212,11 +231,18 @@ app.post('/api/recoverPassword',async(req,res)=>{
             await transporter.sendMail({
                 from: process.env.EMAIL, // sender address
                 to: email, // list of receivers
-                subject: "Recuperación de tu contraseña en FinanceForecast", // Subject line
-                html:  `<b>Hola ${data.nombre} ${data.apellido} </b>
-                <b>Hemos recibido una solicitud para restablecer tu contraseña en FinanceForecast. Si no solicitaste este cambio, puedes ignorar este correo con tranquilidad.\nPara restablecer tu contraseña,\n por favor, sigue el enlace a continuación:\n </b>
-                <a href="${enlace}"><button style="  border: none; color: white;  padding: 14px 28px; cursor: pointer;  border-radius: 5px; background-color: #007bff; transition: box-shadow 0.3s ease-in-out;">Dar click para ir a recuperar contraseña</buton></a>
-                <b> \nEste enlace estará disponible por 30 minutos. Si el enlace ha caducado, puedes volver a solicitar un nuevo enlace desde nuestra plataforma.\nSi tienes alguna duda o problema, no dudes en ponerte en contacto con nuestro equipo de soporte.\nSaludos,\nEl equipo de FinanceForecast\n ${process.env.EMAIL}</b>`
+                subject: "Recuperación de contraseña en FinanceForecast", // Subject line
+                html:  `<b>Hola ${data.nombre} ${data.apellido}, </b> <br/> <br/>
+                <b>Hemos recibido una solicitud para restablecer tu contraseña en FinanceForecast. Si no realizaste esta solicitud, puedes ignorar este correo de manera segura.</b> <br/> <br/>
+                Para restablecer tu contraseña, por favor haz clic en el siguiente enlace: <br/> <br/>
+                <a href="${enlace}"><button style="  border: none; color: white;  padding: 14px 28px; cursor: pointer;  border-radius: 5px; background-color: #007bff; transition: box-shadow 0.3s ease-in-out;">Dar click para ir a recuperar contraseña</buton></a><br/> <br/>
+
+                <b> Este enlace estará disponible durante los próximos 30 minutos. Si expira, puedes solicitar uno nuevo directamente desde nuestra plataforma. <br/> <br/>
+               Si tienes alguna pregunta o necesitas ayuda, no dudes en contactar a nuestro equipo de soporte escribiendo a ${process.env.EMAIL}
+               <br/> <br/>
+               Atentamente, <br/>
+El equipo de FinanceForecast
+               </b>`
             });
             return res.status(200).json({ message: 'Correo de recuperación enviado' });
         } catch (sendError) {
@@ -227,20 +253,25 @@ app.post('/api/recoverPassword',async(req,res)=>{
     }catch{
 
     } finally {
-      if (conect) {conect.release();} // Asegurar la liberación de la conexión
+      if (connectionS) {connectionS.release();} // Asegurar la liberación de la conexión
   }
 })
 
     
+
+
+
+
       
 async function fetchDataAndSave() {
-    try {
+  const connectionS = await connection.getConnection();  
+  try {
       const url = 'https://magicloops.dev/api/loop/run/3d1a638c-beeb-4c85-80c9-eb03f5e3a148';
       const response = await axios.post(url, { input: "I love Magic Loops!" });
       const responseJson = response.data;
   
       console.log('Datos obtenidos de la API:', responseJson);
-      connectionS = await connection.getConnection();
+     
   
       // Extraer el array de certificados_deposito_termino
       const certificados = responseJson.loopOutput.certificados_deposito_termino;
@@ -303,9 +334,9 @@ async function fetchDataAndSave() {
     const { token, email } = req.body; // Asegurarse de que los datos llegan en el cuerpo (req.body)
     console.log(`This is email: ${email}`);
     console.log(`this is token ${token}`);
-  
+    const connectionR = await connection.getConnection();
     try {
-      const connectionR = await connection.getConnection();
+      
     
       // Consulta a la base de datos
       const [tokenRecord] = await connectionR.query(
@@ -320,12 +351,17 @@ async function fetchDataAndSave() {
         console.log(tokenData);
   
         const currentTime = Date.now();
-        console.log(currentTime);
+        console.log(`Este es el tiempo de ahora ${currentTime}`);
   
         // Verifica si el token ha expirado
         const data = new Date(tokenData.token_expires).getTime();
         console.log(data);
-  
+        const tokenValidar = tokenData.token;
+        console.log(tokenValidar);
+        if (token != tokenValidar)
+        {
+          return res.json({ valid: false, message: 'El token es invalido' });
+        }
         if (currentTime > data) {
           return res.json({ valid: false, message: 'El enlace ha expirado' });
         }
@@ -340,9 +376,93 @@ async function fetchDataAndSave() {
       console.error('Error al validar el token:', error);
       return res.status(500).json({ valid: false, message: 'Error interno del servidor' });
     }finally {
-      if (connectionS) {connectionS.release();} // Asegurar la liberación de la conexión
+      if (connectionR) {
+        connectionR.release();
+      }// Asegurar la liberación de la conexión
   }
   });
+
+  app.post('/api/ingreso_password',async(req,res)=>{
+
+    const { email, password } = req.body;
+
+    console.log('Correo:', email);
+    console.log('Contraseña:', password);
+  
+    // Validación de campos
+    if (!email || !password) {
+      return res.status(400).json({ valid: false, message: 'Correo y contraseña son obligatorios' });
+    }
+  
+    let conn;
+    try {
+      conn = await connection.getConnection();
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+      // Consulta para actualizar la contraseña
+      const query = 'UPDATE credenciales SET password = ? WHERE correo = ?';
+      const [result] = await conn.query(query, [hashedPassword, email]);
+  
+      // Verificar si la actualización afectó alguna fila
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ valid: false, message: 'Usuario no encontrado o datos incorrectos' });
+      }
+  
+      console.log('Contraseña actualizada exitosamente');
+      return res.json({ valid: true, message: 'Contraseña cambiada exitosamente' });
+    } catch (error) {
+      console.error('Error al actualizar la contraseña:', error);
+      return res.status(500).json({ valid: false, message: 'Error al cambiar la contraseña' });
+    } finally {
+      // Liberar la conexión
+      if (conn) {
+        conn.release();
+      }
+    }
+  });
+app.get('/api/cookieSee',async(req,res)=>{
+        res.cookie('prueba','estaEsmiCookie')
+        res.send('hello this cookie')
+
+      })
+app.post('/api/logout', (req, res) => {
+        // Eliminar la cookie 'token' configurando su fecha de expiración a una pasada
+        const cookies = req.cookies;
+        console.log('Cookies recibidas:', cookies);
+        console.log('Estas son las cookie',req.cookies)
+        res.clearCookie('token', {
+          httpOnly: true,  // Si la cookie fue configurada como httpOnly
+          secure: false,   // Cambiar a true si usas HTTPS
+          sameSite: 'lax', // O 'none' si trabajas con dominios cruzados y HTTPS
+          path: '/',       // Asegúrate de que coincida con el path al configurar la cookie
+        });
+
+        return res.status(200).json({ message: 'Sesión cerrada correctamente' });
+      }); 
+app.get('/api/getCookie', async(req,res)=>{
+
+        const cookies = req.cookies;
+        console.log('Cookies recibidas:', cookies);
+      
+        if (!cookies.token) {
+
+          console.log("estoy en falso")
+          return res.status(400).json({ valid: false, message: 'Token no válido' });
+          
+        } else {
+          console.log('ESTOY EN VERDADERO')
+          return res.json({ valid: true, message: 'Sí, está el token' });
+        }
+      });
+          
+    
+       
+
+      
+
+   
+
+  
   
   
 

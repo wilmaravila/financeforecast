@@ -1,26 +1,34 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import { parseCookies } from 'nookies'; // Usamos nookies para manejar las cookies
+import jwt from 'jsonwebtoken'; // Para verificar el JWT
 
-export function middleware(request: NextRequest) {
-  // Leer la cookie con el token desde el objeto request
-  const { access_token } = parseCookies({ req: request }); // Usamos 'access_token' como ejemplo, usa el nombre de tu cookie
+export function middleware(request) {
+  const cookies = parseCookies({ req: request });
+  const token = cookies.token; // Asegúrate de que el nombre de la cookie sea 'token'
 
   console.log('Middleware ejecutándose');
-  console.log('Token encontrado:', access_token);
+  console.log('Token encontrado:', token);
 
-  // Si no se encuentra el token, redirigir al usuario a la página de login
-  if (!access_token) {
+  if (!token) {
     console.log('No se encontró el token, redirigiendo a /auth/login');
-    return NextResponse.redirect(new URL('/auth/login', request.url)); // Cambia a la ruta de login que corresponda
+    return NextResponse.redirect(new URL('/auth/login', request.url)); // Ruta de login
   }
 
-  // Si el token está presente, continuar con la solicitud
-  console.log('Token encontrado, continuando con la solicitud');
+  // Verifica el token (si está presente)
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY); // Verifica el token usando la clave secreta
+    console.log('Token válido, usuario:', decoded); // Opcional, para ver los datos del token
+  } catch (error) {
+    console.log('Token inválido, redirigiendo a /auth/login');
+    return NextResponse.redirect(new URL('/auth/login', request.url)); // Redirige a login si el token no es válido
+  }
+
+  // Continuar con la solicitud si el token es válido
   return NextResponse.next();
 }
 
-// Matcher: Define las rutas donde se aplica el middleware
+// Configura las rutas que serán protegidas por el middleware
 export const config = {
-  matcher: ['/banks*', '/finanzasPersonales', '/emuladorCdts'], // Rutas protegidas
+  matcher: ['/banks*', '/finanzasPersonales*', '/emuladorCdts*'], // Agrega más rutas según sea necesario
 };
+

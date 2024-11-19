@@ -1,3 +1,5 @@
+
+'use client'
 import React from 'react';
 import Image from 'next/image'; // Si usas Next.js
 
@@ -10,27 +12,37 @@ import cdtIcon from '../../assets/images/cdt.png';
 import Colombia from '../../assets/images/bColombia.png'
 import Agrario from '../../assets/images/bAgrario.png'
 import Colpatria from '../../assets/images/bColpatria.png'
+import { useRouter } from 'next/navigation';
+import {useState,useEffect} from 'react'
+import useAuth from '../../Controllers/controller';
 
 
 
 
 export default function HomePage() {
-  const prueba =() =>{
-    try{
-       fetch('http://localhost:5000/api/ejecutar_tarea',{
+  
+  
+  
+  const {getCookie} =useAuth();
 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-       
 
-      });
-      return response.json();
-   
-
-    }catch(error){
-      setMessage('Error al recuperar password')
-    }
+  const router = useRouter();
+  useEffect(() =>  {
+    // Leer la cookie 'token' al carconst token = Cookies.get('token');
+    
+    const validar =async ()=>{
+    const token = await getCookie();
+  console.log(token);
+    if (!token) {
+      // Si no hay token, redirigir al login\
+      router.push('../pages/auth/login')
+      
+    }else{
+      
   }
+}
+  validar();
+}, );
 
    // Devuelve las funciones y los estados necesarios
 

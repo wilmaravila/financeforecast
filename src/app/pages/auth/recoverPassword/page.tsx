@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Input from "../../../utils/Input"
 import { useState } from 'react'
 import useAuth from '../../../Controllers/controller';
+
  export default function recoverPassword(){
 
    const [email,setEmail] = useState(''); 
@@ -13,10 +14,23 @@ import useAuth from '../../../Controllers/controller';
    const handleChange =(e)=>{
     setEmail(e.target.value)
    }
+
+   const handleButtonLogin = () =>{
+        window.location.href = '../login'
+   }
    
-  const handleButton = () => {
+  const handleButton =async () => {
     
-    recoverPassword(email);
+    const respuesta = await recoverPassword(email);
+    console.log(respuesta)
+    if(respuesta){
+        window.location.href ='./enviarLogin';
+
+
+       
+
+        
+    }
     
 
   }
