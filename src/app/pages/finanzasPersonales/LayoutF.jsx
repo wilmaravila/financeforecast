@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '../../Controllers/controller'
 
+
 // Imagenes locales o desde public
 import bankingImage from '../../assets/images/Logo.png';
 
@@ -26,7 +27,7 @@ export default function busqueda (){
       setLocation('../auth/login') 
     }else{
     setIsLoading('Sign out');
-    setLocation('../auth/cierreSession');
+    setLocation('./auth/cierreSession');
   }
 }
   validar();

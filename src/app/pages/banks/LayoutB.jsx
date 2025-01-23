@@ -28,7 +28,7 @@ export default function busqueda (){
       setLocation('../auth/login') 
     }else{
     setIsLoading('Sign out');
-    setLocation('../auth/cierreSession');
+    setLocation('./auth/cierreSession');
   }
 }
   validar();

@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 type comps = {
   className?: string;
   id?: string;
-  value?: string; // el valor será manejado por el formulario padre
+  value?: string;
   required?: boolean;
   placeholder: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // onChange provendrá del padre
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   type?: string;
+  onStrengthChange?: (strength: number) => void; // Nueva prop
 };
 
-// Función para evaluar la fuerza de la contraseña
 const evaluatePasswordStrength = (password: string) => {
   let strength = 0;
   if (password.length >= 8) strength += 1;
@@ -25,7 +25,6 @@ const evaluatePasswordStrength = (password: string) => {
   return strength;
 };
 
-// Determinar el color de la barra según la fuerza
 const getStrengthColor = (strength: number) => {
   switch (strength) {
     case 0:
@@ -49,12 +48,18 @@ const PasswordField: React.FC<comps> = ({
   value,
   name,
   required,
-  onChange, // viene del padre
+  onChange,
+  onStrengthChange, // Nueva prop
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const strength = evaluatePasswordStrength(value || ""); // usa el valor recibido como prop
+  const strength = evaluatePasswordStrength(value || "");
 
-  // Alternar visibilidad de la contraseña
+  useEffect(() => {
+    if (onStrengthChange) {
+      onStrengthChange(strength);
+    }
+  }, [strength, onStrengthChange]);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -64,14 +69,14 @@ const PasswordField: React.FC<comps> = ({
       <input
         type={showPassword ? "text" : "password"}
         id={id}
-        value={value} // usa el valor de las props
+        value={value}
         name={name}
+        maxLength={40}
         required={required}
-        onChange={onChange} // usa el onChange del padre
+        onChange={onChange}
         style={{ paddingRight: "40px", width: "100%" }}
-        className=" flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 block w-full"
+        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 block w-full"
       />
-      {/* Botón para mostrar/ocultar contraseña */}
       <span
         onClick={togglePasswordVisibility}
         style={{
@@ -84,8 +89,6 @@ const PasswordField: React.FC<comps> = ({
       >
         <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
       </span>
-
-      {/* Barra de fuerza de contraseña */}
       <div style={{ marginTop: "10px" }}>
         <div
           style={{

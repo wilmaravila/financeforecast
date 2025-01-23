@@ -25,11 +25,9 @@ import useAuth from '../../../Controllers/controller';
     console.log(respuesta)
     if(respuesta){
         window.location.href ='./enviarLogin';
-
-
-       
-
-        
+ 
+    }else{
+        alert('El correo solicitado no se encuetra registrado')
     }
     
 

@@ -1,15 +1,16 @@
 'use client'
 import Image from "next/image"
 import bankingImage from '../../../assets/images/Logo.png' 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAuth from '../../../Controllers/controller';
 import { useRouter } from "next/navigation";
 
 
 
-export default function cierre (){
 
-    const [isLoading,setIsLoading] = useState();
+export default function cierre (){
+  const {getCookie} =useAuth();
+  const [isLoading,setIsLoading] = useState();
     const router = useRouter();
 const {cierreSession} = useAuth();
     const handleButtonCierre = async () => {
@@ -17,10 +18,25 @@ const {cierreSession} = useAuth();
       console.log(respuesta);
         if(respuesta){
             alert('Se a cerrado la sesion satisfactoriamente');
-            router.push('/')
-
+            router.push('/');
+        }
+    }
+    useEffect(() => {
+      const validar = async () => {
+        const token = await getCookie();
+        console.log(token);
+        if (!token) {
+          // Si no hay token, redirigir al login
+          router.push('/login');
         }
       };
+      validar();
+    }, [getCookie, router]);
+    
+
+    
+
+  
 
 
 
@@ -56,3 +72,5 @@ const {cierreSession} = useAuth();
         </div>
       );
     }
+
+    

@@ -1,6 +1,6 @@
 
 'use client'
-import { useState,FormEvent } from "react"
+import { useState,FormEvent,useEffect } from "react"
 import register from '../../../Controllers/registerController';
 import { useRouter } from 'next/navigation';
 import Image from "next/image"
@@ -15,16 +15,16 @@ import { promises } from "dns";
 
 
 
+
 export default function LoginForm() {
-
-
-  const handleGoogleSignIn = () => {
-    // Implement Google Sign-In logic here
-    console.log('Signing in with Google')
-  }
   const router = useRouter(); 
   const [isLoading, setIsLoading] = useState(false)
-  const [password,setPassword] = useState('')
+  const [passwordStrength, setPasswordStrength] = useState(0); // Nuevo estado
+
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [error, setError] = useState<string>("");
   const [formData, setFormData] = useState({
     
     nombre: "",
@@ -34,27 +34,80 @@ export default function LoginForm() {
     password: "",
     passwordC:""
   });
-  console.log(formData);
 
+  const handleGoogleSignIn = () => {
+    // Implement Google Sign-In logic here
+    console.log('Signing in with Google')
+  }
+  useEffect (()=>{
+
+    const today = new Date();
+
+    // Calcula la fecha mínima (120 años atrás)
+    const min = new Date(today);
+    min.setFullYear(today.getFullYear() - 100);
+
+    // Calcula la fecha máxima (10 años atrás)
+    const max = new Date(today);
+    max.setFullYear(today.getFullYear() - 10);
+
+    const formatDate = (date) => date.toISOString().split("T")[0]; // 'YYYY-MM-DD'
+
+    setMinDate(formatDate(min));
+    setMaxDate(formatDate(max));
+   
+
+
+
+  }, []);
+
+  console.log(formData);
+  const handleKeyPress = (e) => {
+    const regex = /^[A-Za-z\s]+$/; // Letras y espacios
+    if (!regex.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+  const validateEmail = (value: string): void => {
+    const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/; // Expresión regular para validar solo @gmail.com
+    if (!regex.test(value)) {
+      setError("El correo debe ser de tipo '@gmail.com'");
+    } else {
+      setError("");
+    }
+  };
   // Manejar los cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+    console.log(value)
+    if(name === 'email:' ){
+      validateEmail(value);
+    }
     setFormData({
       ...formData,
       [name]: value,
       
     });
     
+    
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    console.log("Datos del formulario: ", formData);
+    if (passwordStrength < 3) {
+      alert("La contraseña debe ser 'Buena' o mayor para enviar el formulario.");
+      return;
+    }
+    console.log("Datos del formulario:", formData);
     // Aquí puedes enviar los datos a tu backend o hacer alguna otra acción
   }
   const handleButton = async(e) =>{
     console.log(formData);
+    e.preventDefault();
+    if (passwordStrength < 4) {
+      alert("La contraseña debe ser 'Fuerte' o mayor para ser registrado.");
+      return;
+    }
+    ;
     if(formData.password == formData.passwordC){
       if(formData != null &&   formData.nombre !=""&& formData.apellidos !=""&& formData.dateNacimiento !=""&& formData.email !="" ){
 
@@ -125,7 +178,8 @@ export default function LoginForm() {
                 name="nombre" 
                 type="text" required  
                 placeholder="Andres Felipe"
-                
+                pattern="[A-Za-z\s]+"
+                onKeyDown={handleKeyPress}
                 value={formData.nombre}
                 onChange={handleChange} 
                 
@@ -146,7 +200,9 @@ export default function LoginForm() {
                 id="apellidos" 
                 name="apellidos" 
                 type="text" 
+                pattern="[A-Za-z\s]+"
                 required  
+                onKeyDown={handleKeyPress}
                 placeholder="Hernandez Carrera"
                 value={formData.apellidos}
                 onChange={handleChange}
@@ -167,10 +223,12 @@ export default function LoginForm() {
                  type="date" 
                  required 
                  placeholder=""
+                 max={maxDate}
+                 min={minDate}
                  value={formData.dateNacimiento}
                  onChange={handleChange}
                    />
-                
+               
               </div>
             </div>
 
@@ -187,11 +245,12 @@ export default function LoginForm() {
                 name="email" 
                 type="email" 
                 required  
+                pattern=".+@example\.com"
                 placeholder="juanito@ejemplo.com"
                 value={formData.email}
                 onChange={handleChange}
                  />
-                
+                {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
             </div>
 
@@ -209,7 +268,9 @@ export default function LoginForm() {
                  required 
                 placeholder=""
                 value={formData.password}
-                onChange={handleChange}  />
+                onChange={handleChange} 
+                onStrengthChange={setPasswordStrength} />
+                
               </div>
             </div>
 
